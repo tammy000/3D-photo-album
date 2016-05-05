@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1"  />
+		<title>3d相册</title>
+		<style>
+			*{margin: 0; padding: 0;}
+			body{
+				background: url(image/triangles.png) repeat;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+			}
+			#pic{ 
+				width: 200px; 
+				height: 200px; 
+				margin: 150px auto; 
+				position: relative; 
+				border: 1px solid transparent;
+				-webkit-transform-style: preserve-3d;
+				-moz-transform-style: preserve-3d;
+				-ms-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+				-webkit-transform: perspective(800px) rotateX(-15deg);
+				-moz-transform: perspective(800px) rotateX(-15deg);
+				-ms-transform: perspective(800px) rotateX(-15deg);
+				transform: perspective(800px) rotateX(-15deg);
+				background-image: url(image/snow2.png);
+				background-size: cover;
+			}
+			img{
+				position: absolute; 
+				width: 180px; 
+				height: 200px; 
+				-webkit-border-radius: 5px;
+				-moz-border-radius: 5px;
+				border-radius: 5px;
+				-webkit-box-shadow: 0 0 10px #1E90FF;
+				box-shadow: 0 0 10px #1E90FF;
+				-webkit-box-reflect:below 10px -webkit-linear-gradient(top,rgba(255,0,0,0) 50%,rgba(0,0,0,0.7) 100%);
+				}
+			.footer{
+				width: 800px;
+				height: 800px;
+				-webkit-border-radius: 50%;
+				-moz-border-radius: 50%;
+				border-radius: 50%;
+				-webkit-box-shadow: 0 0 10px #000000;
+				box-shadow: 0 0 10px #000000;
+				background: repeating-radial-gradient(rgba(255,255,255,0.8) 80%,rgba(0,0,0,0.1));
+				-webkit-transform: translateX(-300px) rotateX(90deg) translateZ(190px);
+				-moz-transform: translateX(-300px) rotateX(90deg) translateZ(190px);
+				-ms-transform: translateX(-300px) rotateX(90deg) translateZ(190px);
+				transform: translateX(-300px) rotateX(90deg) translateZ(190px);
+				
+			}
+		</style>
+	</head>
+	<body>
+		<div id="pic">
+			<img src="image/pic1.jpg"  />
+			<img src="image/pic2.jpg"  />
+			<img src="image/pic3.jpg"  />
+			<img src="image/pic4.jpg"  />
+			<img src="image/pic5.jpg"  />
+			<img src="image/pic6.jpg"  />
+			<img src="image/pic7.jpg"  />
+			<img src="image/pic8.jpg"  />
+			<img src="image/pic9.jpg"  />
+			<div class="footer">
+		</div>
+	</body>
+	<script>
+		var opic = document.getElementById("pic");
+		var aimg = opic.getElementsByTagName("img");
+		var aimgLength = aimg.length;
+		//取得每一个图片旋转的角度
+		var degY = 360/aimgLength; 
+		//定义鼠标移动的x和y距离
+		var disX = null;
+		var disY = null;
+		//定义旋转的值
+		var rotX = null;
+		var rotY = null;
+		//把每一个图片按照计算的角度旋转拉开排列整齐
+		for(var  i = 0; i < aimgLength; i++){
+			aimg[i].style.webkitTransform = "rotateY(" + degY*i + "deg) translateZ(300px)";
+		}
+		//取消图片的拖拽默认效果
+		document.ondragstart = function(event){
+			event.preventDefault();
+//			return false;//此方法会使效果比较卡
+		}
+		//按下鼠标时执行操作，得到当前按下鼠标时的坐标
+		document.onmousedown = function(ev){
+			var e = ev || event;
+			var mouX = e.clientX;
+			var mouY = e.clientY;
+			//按下同时滑动鼠标，得到活动后的鼠标
+			document.onmousemove = function(ev){
+				var e = ev || event;
+				var newX = e.clientX;
+				var newY = e.clientY;
+				//得到鼠标移动的横纵坐标
+				disX = newX - mouX;
+				disY = newY - mouY;
+				//把移动的坐标大致当成是旋转的角度，并且减缓效果
+				rotX -= disY * 0.2;
+				rotY += disX * 0.2;
+				//根据得到的旋转值，使得整个div跟随鼠标旋转，并且重新设定视剧
+				opic.style.webkitTransform = "perspective(800px)  rotateX(" + rotX + "deg) rotateY(" + rotY + "deg)";
+				//将新的坐标当初初始化的坐标
+				mouX = newX;
+				mouY = newY;
+			}
+			//松开鼠标时，停止鼠标的滑动操作效果
+			document.onmouseup = function(){
+				document.onmousemove= null;
+			}
+		}
+	</script>
+</html>
